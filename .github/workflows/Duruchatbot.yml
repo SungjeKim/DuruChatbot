@@ -25,21 +25,21 @@ jobs:
       - name: Power Platform WhoAmI
         uses: microsoft/powerplatform-actions/who-am-i@v1
         with:
-          environment-url: ${{ secrets.https://org033068cf.crm5.dynamics.com }}
-          tenant-id: ${{ secrets.f9230b9b-e666-42ce-83be-aa6deb0f78b4 }}
-          app-id: ${{ secrets.8c8bf3b2-4325-4a35-96d6-a57a8aea2e8a }}
-          client-secret: ${{ secrets.4d85a4ac-f39d-46a4-aefc-15b4641ad1da }}
+          environment-url: ${{ secrets.PP_ENV_URL }}
+          tenant-id:       ${{ secrets.PP_TENANT_ID }}
+          app-id:          ${{ secrets.PP_APP_ID }}
+          client-secret:   ${{ secrets.PP_CLIENT_SECRET }}
 
       - name: Export Solution (Unmanaged)
         uses: microsoft/powerplatform-actions/export-solution@v1
         with:
-          environment-url: ${{ secrets.https://org033068cf.crm5.dynamics.com }}
-          tenant-id: ${{ secrets.f9230b9b-e666-42ce-83be-aa6deb0f78b4 }}
-          app-id: ${{ secrets.8c8bf3b2-4325-4a35-96d6-a57a8aea2e8a }}
-          client-secret: ${{ secrets.4d85a4ac-f39d-46a4-aefc-15b4641ad1da }}
-          solution-name: Duruchatbot
-          solution-output-file: exports/Duruchatbot_backup_${{ steps.stamp.outputs.ts }}.zip
-          managed: false
+          environment-url:       ${{ secrets.PP_ENV_URL }}
+          tenant-id:             ${{ secrets.PP_TENANT_ID }}
+          app-id:                ${{ secrets.PP_APP_ID }}
+          client-secret:         ${{ secrets.PP_CLIENT_SECRET }}
+          solution-name:         Duruchatbot
+          solution-output-file:  exports/Duruchatbot_backup_${{ steps.stamp.outputs.ts }}.zip
+          managed:               false
 
       - name: Git config
         run: |
@@ -55,4 +55,5 @@ jobs:
         uses: ad-m/github-push-action@v0.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
+          branch: m
+
