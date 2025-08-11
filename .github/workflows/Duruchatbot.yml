@@ -1,9 +1,12 @@
-name: Daily Power Platform Chatbot Backup
+name: DurumeHRBackup
 
 on:
   schedule:
     - cron: '0 18 * * *'   # 매일 KST(Asia/Seoul) 새벽 3시쯤 실행 (UTC 18시)
   workflow_dispatch:        # 수동 실행 버튼도 켜두기
+
+permissions:
+   contents: write           # 푸시 권한 필수
 
 jobs:
   backup:
@@ -11,6 +14,14 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+
+      - name: Prepare export folder
+        run: mkdir -p exports
+
+      # (선택) 버전 파일명 쓰고 싶으면 아래 주석 해제
+      # - name: Set timestamp
+      #   id: stamp
+      #   run: echo "ts=$(date -u +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
 
       # 마이크로소프트 공식 Power Platform 액션들 (pac CLI 래핑)
       - name: Power Platform WhoAmI
@@ -26,14 +37,22 @@ jobs:
           environment-url: ${{ secrets.PP_ENV_URL }}
           tenant-id: ${{ secrets.PP_TENANT_ID }}
           client-id: ${{ secrets.PP_CLIENT_ID }}
-          solution-name: ChatbotBackup   # 3단계에서 만든 솔루션 이름
+          solution-name: ChatbotBackup    # ← Copilot Studio 솔루션명과 동일해야 함
           solution-output-file: exports/ChatbotBackup-latest.zip
           managed: false
 
+     # (선택) 버전 파일명으로도 복사해 보관
+      # - name: Copy to versioned filename
+      #   run: cp exports/ChatbotBackup-latest.zip exports/ChatbotBackup-${{ steps.stamp.outputs.ts }}.zip
+
+      - name: Git config
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Commit files
         run: |
-          mkdir -p exports
-          git add exports/ChatbotBackup-latest.zip
+          git add exports/
           git commit -m "Auto backup: $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "Nothing to commit"
 
       - name: Push changes
