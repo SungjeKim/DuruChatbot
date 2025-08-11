@@ -1,0 +1,43 @@
+name: Daily Power Platform Chatbot Backup
+
+on:
+  schedule:
+    - cron: '0 18 * * *'   # 매일 KST(Asia/Seoul) 새벽 3시쯤 실행 (UTC 18시)
+  workflow_dispatch:        # 수동 실행 버튼도 켜두기
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 마이크로소프트 공식 Power Platform 액션들 (pac CLI 래핑)
+      - name: Power Platform WhoAmI
+        uses: microsoft/powerplatform-actions/who-am-i@v1
+        with:
+          environment-url: ${{ secrets.PP_ENV_URL }}
+          tenant-id: ${{ secrets.PP_TENANT_ID }}
+          client-id: ${{ secrets.PP_CLIENT_ID }}
+
+      - name: Export Solution (Unmanaged)
+        uses: microsoft/powerplatform-actions/export-solution@v1
+        with:
+          environment-url: ${{ secrets.PP_ENV_URL }}
+          tenant-id: ${{ secrets.PP_TENANT_ID }}
+          client-id: ${{ secrets.PP_CLIENT_ID }}
+          solution-name: ChatbotBackup   # 3단계에서 만든 솔루션 이름
+          solution-output-file: exports/ChatbotBackup-latest.zip
+          managed: false
+
+      - name: Commit files
+        run: |
+          mkdir -p exports
+          git add exports/ChatbotBackup-latest.zip
+          git commit -m "Auto backup: $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "Nothing to commit"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
