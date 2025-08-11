@@ -15,6 +15,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      # ✅ PAC(Power Platform CLI) 설치
+      - name: Install Power Platform CLI
+        uses: microsoft/powerplatform-actions/actions-install@v1
+
       - name: Prepare export folder
         run: mkdir -p exports
 
@@ -55,5 +59,5 @@ jobs:
         uses: ad-m/github-push-action@v0.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: m
+          branch: main
 
