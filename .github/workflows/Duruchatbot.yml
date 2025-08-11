@@ -38,7 +38,7 @@ jobs:
           tenant-id: ${{ secrets.PP_TENANT_ID }}
           client-id: ${{ secrets.PP_CLIENT_ID }}
           solution-name: ChatbotBackup    # ← Copilot Studio 솔루션명과 동일해야 함
-          solution-output-file: exports/ChatbotBackup-latest.zip
+          solution-output-file: exports/DurumeHRBackup_1_0_0_1.zip
           managed: false
 
      # (선택) 버전 파일명으로도 복사해 보관
