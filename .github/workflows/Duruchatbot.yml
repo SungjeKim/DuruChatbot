@@ -1,12 +1,12 @@
-name: DurumeHRBackup
+name: Daily Duruchatbot Backup
 
 on:
   schedule:
-    - cron: '0 18 * * *'   # 매일 KST(Asia/Seoul) 새벽 3시쯤 실행 (UTC 18시)
-  workflow_dispatch:        # 수동 실행 버튼도 켜두기
+    - cron: '0 18 * * *'   # 매일 한국시간 새벽 3시 (UTC 18시)
+  workflow_dispatch:        # 수동 실행 허용
 
 permissions:
-   contents: write           # 푸시 권한 필수
+  contents: write           # GitHub에 푸시 권한
 
 jobs:
   backup:
@@ -18,12 +18,10 @@ jobs:
       - name: Prepare export folder
         run: mkdir -p exports
 
-      # (선택) 버전 파일명 쓰고 싶으면 아래 주석 해제
-      # - name: Set timestamp
-      #   id: stamp
-      #   run: echo "ts=$(date -u +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+      - name: Set timestamp
+        id: stamp
+        run: echo "ts=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
 
-      # 마이크로소프트 공식 Power Platform 액션들 (pac CLI 래핑)
       - name: Power Platform WhoAmI
         uses: microsoft/powerplatform-actions/who-am-i@v1
         with:
@@ -37,13 +35,9 @@ jobs:
           environment-url: ${{ secrets.PP_ENV_URL }}
           tenant-id: ${{ secrets.PP_TENANT_ID }}
           client-id: ${{ secrets.PP_CLIENT_ID }}
-          solution-name: ChatbotBackup    # ← Copilot Studio 솔루션명과 동일해야 함
-          solution-output-file: exports/DurumeHRBackup_1_0_0_1.zip
+          solution-name: Duruchatbot
+          solution-output-file: exports/Duruchatbot_backup_${{ steps.stamp.outputs.ts }}.zip
           managed: false
-
-     # (선택) 버전 파일명으로도 복사해 보관
-      # - name: Copy to versioned filename
-      #   run: cp exports/ChatbotBackup-latest.zip exports/ChatbotBackup-${{ steps.stamp.outputs.ts }}.zip
 
       - name: Git config
         run: |
@@ -53,7 +47,7 @@ jobs:
       - name: Commit files
         run: |
           git add exports/
-          git commit -m "Auto backup: $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "Nothing to commit"
+          git commit -m "Auto backup: ${{ steps.stamp.outputs.ts }}" || echo "Nothing to commit"
 
       - name: Push changes
         uses: ad-m/github-push-action@v0.8.0
