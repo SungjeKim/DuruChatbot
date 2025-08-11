@@ -28,6 +28,7 @@ jobs:
           environment-url: ${{ secrets.https://org033068cf.crm5.dynamics.com }}
           tenant-id: ${{ secrets.f9230b9b-e666-42ce-83be-aa6deb0f78b4 }}
           app-id: ${{ secrets.8c8bf3b2-4325-4a35-96d6-a57a8aea2e8a }}
+          client-secret: ${{ secrets.4d85a4ac-f39d-46a4-aefc-15b4641ad1da }}
 
       - name: Export Solution (Unmanaged)
         uses: microsoft/powerplatform-actions/export-solution@v1
@@ -35,6 +36,7 @@ jobs:
           environment-url: ${{ secrets.https://org033068cf.crm5.dynamics.com }}
           tenant-id: ${{ secrets.f9230b9b-e666-42ce-83be-aa6deb0f78b4 }}
           app-id: ${{ secrets.8c8bf3b2-4325-4a35-96d6-a57a8aea2e8a }}
+          client-secret: ${{ secrets.4d85a4ac-f39d-46a4-aefc-15b4641ad1da }}
           solution-name: Duruchatbot
           solution-output-file: exports/Duruchatbot_backup_${{ steps.stamp.outputs.ts }}.zip
           managed: false
