@@ -42,7 +42,7 @@ jobs:
           app-id:                ${{ secrets.PP_APP_ID }}
           client-secret:         ${{ secrets.PP_CLIENT_SECRET }}
           solution-name:         Duruchatbot
-          solution-output-file:  exports/Duruchatbot_backup_${{ steps.stamp.outputs.ts }}.zip
+          solution-output-file:  exports/DurumeHRBackup_1_0_0_1_${{ steps.stamp.outputs.ts }}.zip
           managed:               false
 
       - name: Git config
